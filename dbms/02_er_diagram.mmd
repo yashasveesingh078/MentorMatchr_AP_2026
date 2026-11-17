@@ -1,0 +1,116 @@
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#f7f9fc","primaryTextColor":"#172b4d","primaryBorderColor":"#426b9b","lineColor":"#52677f","secondaryColor":"#eaf1f8","tertiaryColor":"#ffffff","fontFamily":"Arial"},"er":{"diagramPadding":24,"layoutDirection":"TB","minEntityWidth":170,"minEntityHeight":40,"entityPadding":12,"stroke":"#426b9b","fill":"#f7f9fc","fontSize":13}}}%%
+erDiagram
+    DEPARTMENT ||--o{ FACULTY : "belongs to"
+
+    FACULTY ||--o{ FACULTY_EXPERTISE : "has"
+    EXPERTISE_AREA ||--o{ FACULTY_EXPERTISE : "describes"
+    FACULTY ||--o{ FACULTY_DOMAIN : "has"
+    DOMAIN ||--o{ FACULTY_DOMAIN : "classifies"
+    FACULTY ||--o{ FACULTY_KEYWORD : "has"
+    KEYWORD ||--o{ FACULTY_KEYWORD : "tags"
+
+    HACKATHON ||--o{ PROBLEM_STATEMENT : "contains"
+    DOMAIN ||--o{ PROBLEM_STATEMENT : "categorizes"
+    PROBLEM_STATEMENT ||--o{ PROBLEM_KEYWORD : "has"
+    KEYWORD ||--o{ PROBLEM_KEYWORD : "tags"
+
+    HACKATHON ||--o{ TEAM : "hosts"
+    TEAM ||--o| TEAM_PROBLEM_SELECTION : "selects at most one"
+    PROBLEM_STATEMENT ||--o{ TEAM_PROBLEM_SELECTION : "is selected by"
+
+    TEAM ||--o{ MENTOR_ASSIGNMENT : "receives / history"
+    FACULTY ||--o{ MENTOR_ASSIGNMENT : "mentors"
+    COORDINATOR ||--o{ MENTOR_ASSIGNMENT : "records"
+
+    DEPARTMENT {
+        int department_id PK
+        varchar department_code UK
+        varchar department_name UK
+    }
+    DOMAIN {
+        int domain_id PK
+        varchar domain_name UK
+        text description "nullable"
+    }
+    KEYWORD {
+        int keyword_id PK
+        varchar keyword_name UK
+    }
+    EXPERTISE_AREA {
+        int expertise_id PK
+        varchar expertise_name UK
+    }
+    FACULTY {
+        int faculty_id PK
+        varchar employee_code UK
+        varchar full_name
+        varchar email UK
+        varchar phone "nullable"
+        varchar designation
+        int department_id FK
+        smallint max_teams
+        boolean is_available
+    }
+    FACULTY_EXPERTISE {
+        int faculty_id PK, FK
+        int expertise_id PK, FK
+        smallint years_of_experience
+    }
+    FACULTY_DOMAIN {
+        int faculty_id PK, FK
+        int domain_id PK, FK
+        boolean is_primary
+    }
+    FACULTY_KEYWORD {
+        int faculty_id PK, FK
+        int keyword_id PK, FK
+    }
+    HACKATHON {
+        int hackathon_id PK
+        varchar hackathon_name
+        smallint edition_year
+        date start_date
+        date end_date
+        varchar venue "nullable"
+    }
+    COORDINATOR {
+        int coordinator_id PK
+        varchar full_name
+        varchar email UK
+        varchar phone "nullable"
+    }
+    PROBLEM_STATEMENT {
+        int problem_id PK
+        int hackathon_id FK
+        varchar ps_code
+        varchar title
+        text description
+        int domain_id FK
+        varchar difficulty
+    }
+    PROBLEM_KEYWORD {
+        int problem_id PK, FK
+        int keyword_id PK, FK
+    }
+    TEAM {
+        int team_id PK
+        int hackathon_id FK
+        varchar team_name
+        smallint team_size
+        varchar contact_email
+        timestamptz registered_at
+    }
+    TEAM_PROBLEM_SELECTION {
+        int team_id PK, FK
+        int problem_id FK
+        timestamptz selected_at
+    }
+    MENTOR_ASSIGNMENT {
+        int assignment_id PK
+        int team_id FK
+        int faculty_id FK
+        int assigned_by FK
+        timestamptz assigned_at
+        numeric match_score "nullable"
+        varchar status
+    }
