@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MentorMatch Portal – The Right Mentor for Every Idea</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+  <!-- =========================================================================
+       NAVIGATION BAR
+       ========================================================================= -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#home" class="nav-left" id="logoLink">
+        <div class="logo-badge">M</div>
+        <span class="brand-name">MentorMatch</span>
+        <span class="brand-portal-pill">PORTAL</span>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#home" class="active" id="navHome">Home</a></li>
+          <li><a href="#how-it-works" id="navHow">How It Works</a></li>
+          <li><a href="#workspace" id="navFeatures">Features</a></li>
+          <li><a href="#teams-section" id="navTeams">Teams & Allocations</a></li>
+          <li><a href="#workspace" id="navFacultyPortal">Faculty Portal</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-right" id="navUserArea">
+        <div class="user-profile-preview" id="userProfilePreview">
+          <span class="user-name-label" id="userNameDisplay">Dr. Arun Sharma</span>
+          <span class="user-role-label" id="userRoleDisplay">Faculty</span>
+        </div>
+        <button class="btn-nav-action" id="authBtn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       HERO SECTION WITH LIVE MATCH SIMULATOR
+       ========================================================================= -->
+  <section class="hero-section" id="home">
+    <div class="container hero-grid">
+      
+      <!-- Left Column: Editorial Headline & Actions -->
+      <div class="hero-content">
+        <div class="hero-tag-pill">
+          <span class="hero-tag-dot"></span>
+          <span>Smarter Hackathons. Better Mentorship.</span>
+        </div>
+
+        <h1 class="hero-title">
+          The Right Mentor<br>
+          <em>for Every Idea.</em>
+        </h1>
+
+        <p class="hero-desc">
+          Connect hackathon teams with faculty experts through intelligent domain and keyword matching. Find the right expertise for every problem statement.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#workspace" class="btn-primary" id="btnHeroWorkspace">
+            Go to Workspace &rarr;
+          </a>
+          <a href="#how-it-works" class="btn-secondary" id="btnHeroHowItWorks">
+            Explore How It Works
+          </a>
+        </div>
+
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <span class="metric-number" id="statDomains">10+</span>
+            <span class="metric-label">Technical Domains</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-number">100%</span>
+            <span class="metric-label">Explainable Scores</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-number">0 min</span>
+            <span class="metric-label">Manual Cross-Checking</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Live Match Simulator Card (Reference Image Replica) -->
+      <div class="hero-simulator">
+        <div class="simulator-card-wrapper">
+          
+          <!-- Simulator Header -->
+          <div class="sim-header">
+            <div class="sim-window-dots">
+              <span class="sim-dot"></span>
+              <span class="sim-dot"></span>
+              <span class="sim-dot"></span>
+              <span class="sim-title" style="margin-left: 6px;">Live Match Simulator</span>
+            </div>
+            <div class="sim-team-tabs" id="simTeamTabs">
+              <button class="sim-team-pill active" data-team="CareSync AI">CareSync AI</button>
+              <button class="sim-team-pill" data-team="SecureLedger">SecureLedger</button>
+              <button class="sim-team-pill" data-team="AgriSense IoT">AgriSense IoT</button>
+            </div>
+          </div>
+
+          <!-- Problem Statement Info Box -->
+          <div class="sim-problem-box" id="simProblemBox">
+            <div class="sim-ps-meta" id="simPsMeta">
+              PROBLEM STATEMENT #PS-04 &bull; TEAM CARESYNC AI
+            </div>
+            <h3 class="sim-ps-title" id="simPsTitle">
+              Automated Medical Imaging Diagnostics Using Transformer Ensembles
+            </h3>
+            <div class="sim-tags-cluster" id="simTagsCluster">
+              <span class="badge-domain" id="simDomainBadge">AI & Machine Learning</span>
+              <span class="badge-tag">Healthcare Tech</span>
+              <span class="badge-tag">#PyTorch</span>
+              <span class="badge-tag">#Transformers</span>
+              <span class="badge-tag">#Medical Imaging</span>
+              <span class="badge-tag">#DICOM</span>
+            </div>
+          </div>
+
+          <!-- Ranked Recommendations Section -->
+          <div class="sim-recommendations-header">
+            <span class="sim-rec-title">Ranked Faculty Recommendations</span>
+            <span class="sim-rec-weights">Weights: Domain (60%) + Tags (40%)</span>
+          </div>
+
+          <!-- Dynamic Container for Recommendations -->
+          <div id="simRecommendationsList">
+            <!-- Top Match Faculty Card -->
+            <div class="sim-faculty-card top-match">
+              <div class="sim-faculty-card-header">
+                <span class="sim-faculty-name">Dr. Arun Sharma</span>
+                <span class="sim-badge-top-match">TOP MATCH</span>
+              </div>
+              <div class="sim-faculty-dept">Computer Science & Engineering</div>
+              <div class="sim-match-explanation">
+                <span>&#10003; Direct Primary Domain Match + 4 Overlapping Tags</span>
+              </div>
+              <div class="sim-card-bottom">
+                <div class="sim-score-group">
+                  <span class="sim-score-value">86.7%</span>
+                  <span class="sim-score-label">Compatibility</span>
+                  <span class="sim-capacity-badge">0/2 Available</span>
+                </div>
+                <button class="sim-btn-assign" onclick="handleSimAssign(1, 1, 'CareSync AI', 'Dr. Arun Sharma', 86.7)">
+                  Assign Mentor
+                </button>
+              </div>
+            </div>
+
+            <!-- Secondary Match Preview -->
+            <div class="sim-secondary-faculty-row">
+              <div>
+                <div class="sim-sec-name">Dr. Sanjay Bhattacharya</div>
+                <div class="sim-sec-sub">Biomedical Engineering &bull; DICOM, Bio-Signals</div>
+              </div>
+              <div>
+                <div class="sim-sec-score">73.3%</div>
+                <div class="sim-sec-load">Load: 0/2</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       KEYWORD & DOMAIN MATCHING WORKSPACE (Interactive Filter Engine)
+       ========================================================================= -->
+  <section class="workspace-section" id="workspace">
+    <div class="container">
+      
+      <div class="section-header-centered">
+        <span class="section-pill-tag">Interactive Matching Engine</span>
+        <h2 class="section-heading">
+          Filter Mentors by <em>Keywords, Domains & Expertise.</em>
+        </h2>
+        <p class="section-subtext">
+          Directly query the normalized BCNF database. Type technical keywords or select domains to compute transparent relational compatibility rankings.
+        </p>
+      </div>
+
+      <!-- Filter Controls Container -->
+      <div class="filter-card">
+        <div class="filter-grid">
+          
+          <!-- Keywords Search -->
+          <div class="filter-group">
+            <label class="filter-label" for="keywordInput">Technical Keywords</label>
+            <div class="input-keyword-wrapper">
+              <input
+                type="text"
+                id="keywordInput"
+                class="input-keyword"
+                placeholder="Type keywords (e.g. PyTorch, React, DICOM, Solidity)..."
+              >
+            </div>
+          </div>
+
+          <!-- Domain Filter -->
+          <div class="filter-group">
+            <label class="filter-label" for="domainSelect">Technical Domain</label>
+            <select id="domainSelect" class="select-filter">
+              <option value="">All Technical Domains</option>
+            </select>
+          </div>
+
+          <!-- Expertise Area Filter -->
+          <div class="filter-group">
+            <label class="filter-label" for="expertiseSelect">Specialized Expertise</label>
+            <select id="expertiseSelect" class="select-filter">
+              <option value="">All Expertise Areas</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Preset Keywords Chips -->
+        <div class="preset-keywords-wrap">
+          <span class="preset-kw-label">Popular tags:</span>
+          <button class="chip-keyword" data-kw="PyTorch">#PyTorch</button>
+          <button class="chip-keyword" data-kw="Transformers">#Transformers</button>
+          <button class="chip-keyword" data-kw="Medical Imaging">#Medical Imaging</button>
+          <button class="chip-keyword" data-kw="DICOM">#DICOM</button>
+          <button class="chip-keyword" data-kw="Python">#Python</button>
+          <button class="chip-keyword" data-kw="React">#React</button>
+          <button class="chip-keyword" data-kw="Node.js">#Node.js</button>
+          <button class="chip-keyword" data-kw="Solidity">#Solidity</button>
+          <button class="chip-keyword" data-kw="OpenCV">#OpenCV</button>
+          <button class="chip-keyword" data-kw="Edge AI">#Edge AI</button>
+          <button class="chip-keyword" data-kw="PostgreSQL">#PostgreSQL</button>
+        </div>
+
+        <!-- Filter Footer Controls -->
+        <div class="filter-footer-controls">
+          <div style="display: flex; align-items: center; gap: 20px;">
+            <label class="toggle-label">
+              <input type="checkbox" id="availOnlyCheck" checked>
+              <span>Available Mentors Only (Capacity &lt; Max)</span>
+            </label>
+            <label class="toggle-label" style="display: flex; align-items: center; gap: 6px;">
+              <span>Min Experience:</span>
+              <select id="minExpSelect" class="select-filter" style="padding: 4px 8px; font-size: 12px;">
+                <option value="0">Any Experience</option>
+                <option value="4">4+ Years</option>
+                <option value="6">6+ Years</option>
+                <option value="8">8+ Years</option>
+              </select>
+            </label>
+          </div>
+          <button class="btn-reset-filters" id="btnResetFilters">Reset all filters</button>
+        </div>
+
+      </div>
+
+      <!-- Live Results Header -->
+      <div class="results-header">
+        <span class="results-count" id="resultsCount">Showing 7 available faculty mentors</span>
+        <span style="font-size: 12px; color: var(--text-tertiary);">Ranked by Domain Match (60%) + Tag Overlap (40%)</span>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="results-grid" id="facultyResultsGrid">
+        <!-- Faculty cards will be dynamically injected here -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       TEAMS & ACTIVE ALLOCATIONS
+       ========================================================================= -->
+  <section class="workspace-section" id="teams-section" style="background: #FFFFFF; border-top: 1px solid var(--border-light);">
+    <div class="container">
+      
+      <div class="section-header-centered" style="margin-bottom: 32px;">
+        <span class="section-pill-tag">Hackathon Operations</span>
+        <h2 class="section-heading">
+          Registered Teams &amp; <em>Mentor Allocations.</em>
+        </h2>
+        <p class="section-subtext">
+          Track selected problem statements, assigned faculty mentors, and enforce single active mentor integrity.
+        </p>
+      </div>
+
+      <div class="teams-table-card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Team Name</th>
+                <th>Selected Problem Statement</th>
+                <th>Domain &amp; Difficulty</th>
+                <th>Assigned Mentor</th>
+                <th>Match Score</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="teamsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Assignment Audit History -->
+      <div style="margin-top: 36px;">
+        <h4 style="font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text-primary);">
+          Recent Mentor Allocation Audit Trail
+        </h4>
+        <div id="assignmentAuditList" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       HOW IT WORKS (SYSTEM WORKFLOW)
+       ========================================================================= -->
+  <section class="workflow-section" id="how-it-works">
+    <div class="container">
+      
+      <div class="section-header-centered">
+        <span class="section-pill-tag">System Workflow</span>
+        <h2 class="section-heading">
+          How It <em>Works.</em>
+        </h2>
+        <p class="section-subtext">
+          MentorMatchr replaces chaotic manual spreadsheet matching with an airtight relational database architecture.
+        </p>
+      </div>
+
+      <div class="workflow-grid">
+        
+        <div class="workflow-card">
+          <div class="step-num">Step 01</div>
+          <h4 class="workflow-title">Controlled Taxonomy</h4>
+          <p class="workflow-text">
+            Faculty domains, expertise areas, and technical keywords are stored in normalized master tables to eliminate vocabulary drift and typos.
+          </p>
+        </div>
+
+        <div class="workflow-card">
+          <div class="step-num">Step 02</div>
+          <h4 class="workflow-title">Problem Scoping</h4>
+          <p class="workflow-text">
+            Each hackathon problem statement is tagged with a primary domain and required technical keywords, isolated to the event scope.
+          </p>
+        </div>
+
+        <div class="workflow-card">
+          <div class="step-num">Step 03</div>
+          <h4 class="workflow-title">Relational Scoring</h4>
+          <p class="workflow-text">
+            A deterministic SQL matching engine weights primary/secondary domain affinity (60%) and keyword tag intersection (40%) into explainable scores.
+          </p>
+        </div>
+
+        <div class="workflow-card">
+          <div class="step-num">Step 04</div>
+          <h4 class="workflow-title">Capacity &amp; Auditing</h4>
+          <p class="workflow-text">
+            Partial unique indexes enforce at most one active mentor per team, while application guards ensure no faculty exceeds their maximum team workload.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-left">
+        <div class="logo-badge" style="width: 24px; height: 24px; font-size: 13px;">M</div>
+        <span>MentorMatchr &copy; 2026 &bull; Faculty Mentor Allocation Portal</span>
+      </div>
+      <div class="footer-tech-stack">
+        <span>PostgreSQL 15+ Schema &bull; 15 BCNF Relations &bull; Zero Redundancy</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       LOGIN MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal-window">
+      <button class="modal-close-btn" id="closeLoginModal">&times;</button>
+      <h3 class="modal-title">Sign In to <em>MentorMatchr</em></h3>
+      <p class="modal-desc">Access the portal to manage mentor assignments or view your mentoring schedule.</p>
+
+      <div class="role-switcher-tabs">
+        <button class="role-tab active" id="tabCoordinator" data-role="coordinator">Coordinator</button>
+        <button class="role-tab" id="tabFaculty" data-role="faculty">Faculty Member</button>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" required value="p.nair@codefest.edu">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" class="form-input" value="••••••••" required>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; border-radius: var(--radius-md);">
+          Sign In &rarr;
+        </button>
+      </form>
+
+      <div class="demo-login-options">
+        <div class="demo-label">Quick 1-Click Demo Profiles</div>
+        <div class="demo-buttons-wrap">
+          <button class="btn-demo-quick" onclick="quickLogin('p.nair@codefest.edu', 'coordinator')">
+            <strong>Priya Nair</strong> <span>(Head Coordinator)</span>
+          </button>
+          <button class="btn-demo-quick" onclick="quickLogin('arun.sharma@inst.edu', 'faculty')">
+            <strong>Dr. Arun Sharma</strong> <span>(Professor, CSE • AI Top Match)</span>
+          </button>
+          <button class="btn-demo-quick" onclick="quickLogin('sanjay.b@inst.edu', 'faculty')">
+            <strong>Dr. Sanjay Bhattacharya</strong> <span>(Assoc. Prof, BME • Healthcare)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       ASSIGN MENTOR MODAL
+       ========================================================================= -->
+  <div class="modal-overlay" id="assignModal">
+    <div class="modal-window">
+      <button class="modal-close-btn" id="closeAssignModal">&times;</button>
+      <h3 class="modal-title">Assign <em>Faculty Mentor</em></h3>
+      <p class="modal-desc" id="assignModalDesc">Assign Dr. Arun Sharma to a participating hackathon team.</p>
+
+      <form id="assignForm">
+        <input type="hidden" id="assignFacultyId">
+        <input type="hidden" id="assignScore">
+
+        <div class="form-group">
+          <label class="form-label" for="assignTeamSelect">Select Team</label>
+          <select id="assignTeamSelect" class="form-input" required>
+            <!-- Injected dynamically -->
+          </select>
+        </div>
+
+        <div id="assignTeamProblemPreview" style="background: #FAF8F5; padding: 12px; border-radius: 8px; margin-bottom: 18px; border: 1px solid var(--border-light); font-size: 13px;">
+          <!-- Dynamically populated -->
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; border-radius: var(--radius-md);">
+          Confirm Assignment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="/js/auth.js"></script>
+  <script src="/js/simulator.js"></script>
+  <script src="/js/filter.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
