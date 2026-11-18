@@ -180,6 +180,153 @@ body {
   width: 100%;
 }
 
+.nav-portal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-primary);
+  background: #F3EFEA;
+  border: 1px solid var(--border-medium);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.nav-portal-badge .badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--badge-sage-text);
+  animation: pulseGlow 2.2s infinite ease-in-out;
+}
+
+/* =============================================================================
+   IN-PAGE SUBNAV STRIP (Tab Navigation within Portals)
+   ============================================================================= */
+.portal-subnav-strip {
+  background: rgba(250, 248, 245, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 32px;
+  position: sticky;
+  top: 61px;
+  z-index: 50;
+  transition: all 0.2s ease;
+}
+
+.subnav-tabs-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.subnav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.subnav-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.subnav-tab-btn {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.subnav-tab-btn:hover {
+  background: var(--bg-surface-subtle);
+  color: var(--text-primary);
+}
+
+.subnav-tab-btn.active {
+  background: var(--text-primary);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(23, 22, 21, 0.12);
+}
+
+.subnav-tab-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #A3D9A5;
+}
+
+.subnav-tab-btn:not(.active) .subnav-tab-dot {
+  background-color: var(--badge-sage-text);
+}
+
+.tab-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: #ECE8E0;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+}
+
+.subnav-tab-btn.active .tab-tag {
+  background: rgba(255, 255, 255, 0.22);
+  color: #FFFFFF;
+}
+
+.tab-tag.sage {
+  background: var(--badge-sage-bg);
+  color: var(--badge-sage-text);
+}
+
+.subnav-tab-btn.active .tab-tag.sage {
+  background: #3B543F;
+  color: #E2F0E1;
+}
+
+.tab-tag.badge-amber {
+  background: #FFF3DC;
+  color: #8C5D00;
+}
+
+.subnav-tab-btn.active .tab-tag.badge-amber {
+  background: #B37400;
+  color: #FFF9EE;
+}
+
+.tab-pane-transition {
+  animation: tabFadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .nav-right {
   display: flex;
   align-items: center;
@@ -1563,8 +1710,299 @@ table.data-table tr:last-child td {
 }
 
 /* =============================================================================
-   FOOTER
+   MULTI-PAGE ARCHITECTURE & PORTAL STYLES
    ============================================================================= */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-view {
+  display: none;
+  width: 100%;
+}
+
+.page-view.active {
+  display: block;
+  animation: pageFadeIn 0.36s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Page Banner / Hero Header */
+.portal-page-header {
+  padding: 44px 0 32px;
+  border-bottom: 1px solid var(--border-light);
+  background: #FAF8F5;
+  margin-bottom: 36px;
+}
+
+.portal-header-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .portal-header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.portal-title-block h1 {
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+
+.portal-title-block h1 em {
+  font-family: var(--font-serif-italic);
+  font-style: italic;
+  font-weight: 400;
+}
+
+.portal-title-block p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  max-width: 580px;
+}
+
+/* Dedicated Login Page */
+.login-page-container {
+  max-width: 520px;
+  margin: 64px auto 96px;
+  padding: 0 20px;
+}
+
+.login-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 38px;
+  box-shadow: var(--shadow-elevated);
+}
+
+.login-type-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background: #FAF8F5;
+  padding: 6px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  margin-bottom: 28px;
+}
+
+.login-type-btn {
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-type-btn.active {
+  background: #FFFFFF;
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Student Portal Cards */
+.student-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+@media (max-width: 960px) {
+  .student-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: 28px;
+  box-shadow: var(--shadow-subtle);
+  margin-bottom: 28px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.portal-card:hover {
+  border-color: #D6D0C5;
+  box-shadow: 0 10px 32px -6px rgba(35, 30, 20, 0.05);
+}
+
+.portal-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #F5F1E8;
+}
+
+.portal-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Faculty Availability Toggle Pill */
+.faculty-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  padding: 12px 20px;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-subtle);
+}
+
+.availability-toggle-btn {
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-medium);
+  background: #FAF8F5;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.availability-toggle-btn.available {
+  background: var(--badge-sage-bg);
+  color: var(--badge-sage-text);
+  border-color: var(--badge-sage-border);
+}
+
+.availability-toggle-btn.available::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--badge-sage-text);
+  animation: pulseGlow 2.4s infinite ease-in-out;
+}
+
+/* Mentorship Review Request List */
+.request-item {
+  background: #FAF8F5;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.request-item:hover {
+  background: #FFFFFF;
+  border-color: var(--border-medium);
+}
+
+.request-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.request-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.request-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.request-notes-box {
+  background: #FFFFFF;
+  border-left: 3px solid var(--badge-sage-text);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  color: #2D3E30;
+  margin-top: 8px;
+}
+
+/* Milestone Checklist in Student Portal */
+.milestone-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.milestone-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: #FAF8F5;
+  border: 1px solid var(--border-light);
+}
+
+.milestone-step.completed {
+  background: #F4F8F4;
+  border-color: #D2E2D1;
+}
+
+.milestone-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--text-primary);
+  color: #FFFFFF;
+  flex-shrink: 0;
+}
+
+.milestone-step.completed .milestone-icon {
+  background: var(--badge-sage-text);
+}
+
+/* FOOTER */
 .site-footer {
   margin-top: auto;
   border-top: 1px solid var(--border-light);

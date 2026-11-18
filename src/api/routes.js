@@ -338,25 +338,251 @@ export function handleApiRequest(req, res, pathname, query, body) {
     }
 
     // -------------------------------------------------------------------------
+    // GET /api/student/dashboard
+    // -------------------------------------------------------------------------
+    if (req.method === 'GET' && pathname === '/api/student/dashboard') {
+      const teamId = Number(query.get('teamId')) || 1;
+      const team = db.prepare('SELECT * FROM team WHERE team_id = ?').get(teamId);
+      if (!team) {
+        return sendJson(res, 404, { success: false, message: 'Team not found' });
+      }
+
+      // Problem selection
+      const problem = db.prepare(`
+        SELECT p.*, d.domain_name
+        FROM team_problem_selection s
+        JOIN problem_statement p ON p.problem_id = s.problem_id
+        JOIN domain d ON d.domain_id = p.domain_id
+        WHERE s.team_id = ?
+      `).get(teamId);
+
+      if (problem) {
+        problem.keywords = db.prepare(`
+          SELECT k.keyword_name
+          FROM problem_keyword pk
+          JOIN keyword k ON k.keyword_id = pk.keyword_id
+          WHERE pk.problem_id = ?
+        `).all(problem.problem_id).map(k => k.keyword_name);
+      }
+
+      // Assigned mentor (active)
+      const assignment = db.prepare(`
+        SELECT ma.*, f.full_name, f.email, f.designation, d.department_name, d.department_code, f.phone
+        FROM mentor_assignment ma
+        JOIN faculty f ON f.faculty_id = ma.faculty_id
+        JOIN department d ON d.department_id = f.department_id
+        WHERE ma.team_id = ? AND ma.status = 'ACTIVE'
+      `).get(teamId);
+
+      if (assignment) {
+        assignment.keywords = db.prepare(`
+          SELECT k.keyword_name
+          FROM faculty_keyword fk
+          JOIN keyword k ON k.keyword_id = fk.keyword_id
+          WHERE fk.faculty_id = ?
+        `).all(assignment.faculty_id).map(k => k.keyword_name);
+      }
+
+      // Mentorship review requests
+      const requests = db.prepare(`
+        SELECT mr.*, f.full_name AS mentor_name
+        FROM mentorship_request mr
+        JOIN faculty f ON f.faculty_id = mr.faculty_id
+        WHERE mr.team_id = ?
+        ORDER BY mr.created_at DESC
+      `).all(teamId);
+
+      return sendJson(res, 200, {
+        success: true,
+        data: {
+          team,
+          problem,
+          assignment,
+          requests
+        }
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // GET /api/faculty/dashboard
+    // -------------------------------------------------------------------------
+    if (req.method === 'GET' && pathname === '/api/faculty/dashboard') {
+      const facultyId = Number(query.get('facultyId')) || 1;
+      const faculty = db.prepare(`
+        SELECT f.*, d.department_name, d.department_code,
+               COUNT(ma.assignment_id) FILTER (WHERE ma.status = 'ACTIVE') AS active_teams
+        FROM faculty f
+        JOIN department d ON d.department_id = f.department_id
+        LEFT JOIN mentor_assignment ma ON ma.faculty_id = f.faculty_id
+        WHERE f.faculty_id = ?
+        GROUP BY f.faculty_id
+      `).get(facultyId);
+
+      if (!faculty) {
+        return sendJson(res, 404, { success: false, message: 'Faculty not found' });
+      }
+
+      faculty.remaining_capacity = Math.max(0, faculty.max_teams - faculty.active_teams);
+      faculty.is_available = Boolean(faculty.is_available);
+
+      // Assigned teams
+      const assignedTeams = db.prepare(`
+        SELECT t.team_id, t.team_name, t.team_size, t.contact_email,
+               p.ps_code, p.title AS problem_title, d.domain_name,
+               ma.assignment_id, ma.match_score, ma.assigned_at, ma.status
+        FROM mentor_assignment ma
+        JOIN team t ON t.team_id = ma.team_id
+        LEFT JOIN team_problem_selection s ON s.team_id = t.team_id
+        LEFT JOIN problem_statement p ON p.problem_id = s.problem_id
+        LEFT JOIN domain d ON d.domain_id = p.domain_id
+        WHERE ma.faculty_id = ? AND ma.status = 'ACTIVE'
+        ORDER BY ma.assigned_at DESC
+      `).all(facultyId);
+
+      // Incoming mentorship check-in requests
+      const incomingRequests = db.prepare(`
+        SELECT mr.*, t.team_name, t.contact_email
+        FROM mentorship_request mr
+        JOIN team t ON t.team_id = mr.team_id
+        WHERE mr.faculty_id = ?
+        ORDER BY CASE WHEN mr.status = 'PENDING' THEN 0 ELSE 1 END, mr.created_at DESC
+      `).all(facultyId);
+
+      // Profile details (domains, expertise, keywords)
+      const domains = db.prepare(`
+        SELECT fd.domain_id, d.domain_name, fd.is_primary
+        FROM faculty_domain fd
+        JOIN domain d ON d.domain_id = fd.domain_id
+        WHERE fd.faculty_id = ?
+      `).all(facultyId).map(d => ({ ...d, is_primary: Boolean(d.is_primary) }));
+
+      const expertise = db.prepare(`
+        SELECT fe.expertise_id, ea.expertise_name, fe.years_of_experience
+        FROM faculty_expertise fe
+        JOIN expertise_area ea ON ea.expertise_id = fe.expertise_id
+        WHERE fe.faculty_id = ?
+        ORDER BY fe.years_of_experience DESC
+      `).all(facultyId);
+
+      const keywords = db.prepare(`
+        SELECT k.keyword_name
+        FROM faculty_keyword fk
+        JOIN keyword k ON k.keyword_id = fk.keyword_id
+        WHERE fk.faculty_id = ?
+        ORDER BY k.keyword_name
+      `).all(facultyId).map(k => k.keyword_name);
+
+      return sendJson(res, 200, {
+        success: true,
+        data: {
+          faculty,
+          assignedTeams,
+          incomingRequests,
+          profile: {
+            domains,
+            expertise,
+            keywords
+          }
+        }
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // PUT /api/faculty/availability (Toggle availability)
+    // -------------------------------------------------------------------------
+    if (req.method === 'PUT' && pathname === '/api/faculty/availability') {
+      const { facultyId, isAvailable } = body || {};
+      if (!facultyId) {
+        return sendJson(res, 400, { success: false, message: 'facultyId is required' });
+      }
+
+      db.prepare(`
+        UPDATE faculty
+        SET is_available = ?
+        WHERE faculty_id = ?
+      `).run(isAvailable ? 1 : 0, facultyId);
+
+      return sendJson(res, 200, {
+        success: true,
+        message: `Mentoring availability set to ${isAvailable ? 'AVAILABLE' : 'BUSY'}.`
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // POST /api/mentorship-requests (Student submits review request)
+    // -------------------------------------------------------------------------
+    if (req.method === 'POST' && pathname === '/api/mentorship-requests') {
+      const { teamId, facultyId, milestoneTitle, description } = body || {};
+      if (!teamId || !facultyId || !milestoneTitle) {
+        return sendJson(res, 400, { success: false, message: 'teamId, facultyId, and milestoneTitle are required' });
+      }
+
+      db.prepare(`
+        INSERT INTO mentorship_request (team_id, faculty_id, milestone_title, description, status)
+        VALUES (?, ?, ?, ?, 'PENDING')
+      `).run(teamId, facultyId, milestoneTitle, description || '');
+
+      return sendJson(res, 201, {
+        success: true,
+        message: 'Mentorship review request submitted successfully!'
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // PUT /api/mentorship-requests/resolve (Faculty completes review with notes)
+    // -------------------------------------------------------------------------
+    if (req.method === 'PUT' && pathname === '/api/mentorship-requests/resolve') {
+      const { requestId, mentorNotes } = body || {};
+      if (!requestId) {
+        return sendJson(res, 400, { success: false, message: 'requestId is required' });
+      }
+
+      db.prepare(`
+        UPDATE mentorship_request
+        SET status = 'COMPLETED', mentor_notes = ?
+        WHERE request_id = ?
+      `).run(mentorNotes || 'Reviewed and approved.', requestId);
+
+      return sendJson(res, 200, {
+        success: true,
+        message: 'Review session marked as completed with mentor remarks.'
+      });
+    }
+
+    // -------------------------------------------------------------------------
     // POST /api/auth/login
     // -------------------------------------------------------------------------
     if (req.method === 'POST' && pathname === '/api/auth/login') {
       const { email, role } = body || {};
 
+      if (role === 'student') {
+        const team = db.prepare('SELECT * FROM team WHERE contact_email = ? OR team_id = ?').get(email || 'lead@caresync.ai', Number(email) || 1)
+          || db.prepare('SELECT * FROM team LIMIT 1').get();
+        return sendJson(res, 200, {
+          success: true,
+          user: {
+            id: team.team_id,
+            name: team.team_name,
+            email: team.contact_email,
+            role: 'student',
+            designation: `Student Team (${team.team_size} members)`
+          }
+        });
+      }
+
       if (role === 'faculty') {
-        const faculty = db.prepare('SELECT * FROM faculty WHERE email = ?').get(email || 'arun.sharma@inst.edu');
-        if (faculty) {
-          return sendJson(res, 200, {
-            success: true,
-            user: {
-              id: faculty.faculty_id,
-              name: faculty.full_name,
-              email: faculty.email,
-              role: 'faculty',
-              designation: faculty.designation
-            }
-          });
-        }
+        const faculty = db.prepare('SELECT * FROM faculty WHERE email = ? OR faculty_id = ?').get(email || 'arun.sharma@inst.edu', Number(email) || 1)
+          || db.prepare('SELECT * FROM faculty LIMIT 1').get();
+        return sendJson(res, 200, {
+          success: true,
+          user: {
+            id: faculty.faculty_id,
+            name: faculty.full_name,
+            email: faculty.email,
+            role: 'faculty',
+            designation: faculty.designation
+          }
+        });
       }
 
       // Default to coordinator

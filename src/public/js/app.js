@@ -2,22 +2,69 @@
 // MentorMatchr: Main Application Coordinator
 // =============================================================================
 
+import { initRouter } from './router.js';
 import { initAuth, getCurrentUser } from './auth.js';
 import { initSimulator } from './simulator.js';
 import { initFilterWorkspace, triggerFilterSearch } from './filter.js';
+import { initStudentModal } from './student.js';
+import { initFacultyModal } from './faculty.js';
 
 let cachedTeams = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+  initRouter();
   initAuth();
   initSimulator();
   initFilterWorkspace();
+  initStudentModal();
+  initFacultyModal();
+  initCoordinatorTabs();
   loadStats();
   loadTeams();
   loadAuditHistory();
   initAssignModal();
-  initNavLinks();
 });
+
+function initCoordinatorTabs() {
+  const tabs = document.querySelectorAll('#coordinatorSubnavTabs .subnav-tab-btn');
+  const matrixSection = document.getElementById('coordSectionMatrix');
+  const teamsSection = document.getElementById('coordSectionTeams');
+  const auditSection = document.getElementById('coordSectionAudit');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const target = tab.getAttribute('data-tab');
+
+      const animateEl = (el) => {
+        if (!el) return;
+        el.classList.remove('tab-pane-transition');
+        void el.offsetWidth;
+        el.classList.add('tab-pane-transition');
+      };
+
+      if (target === 'all') {
+        if (matrixSection) { matrixSection.style.display = 'block'; animateEl(matrixSection); }
+        if (teamsSection) { teamsSection.style.display = 'block'; animateEl(teamsSection); }
+        if (auditSection) { auditSection.style.display = 'block'; animateEl(auditSection); }
+      } else if (target === 'matrix') {
+        if (matrixSection) { matrixSection.style.display = 'block'; animateEl(matrixSection); }
+        if (teamsSection) { teamsSection.style.display = 'none'; }
+        if (auditSection) { auditSection.style.display = 'none'; }
+      } else if (target === 'teams') {
+        if (matrixSection) { matrixSection.style.display = 'none'; }
+        if (teamsSection) { teamsSection.style.display = 'block'; animateEl(teamsSection); }
+        if (auditSection) { auditSection.style.display = 'none'; }
+      } else if (target === 'audit') {
+        if (matrixSection) { matrixSection.style.display = 'none'; }
+        if (teamsSection) { teamsSection.style.display = 'none'; }
+        if (auditSection) { auditSection.style.display = 'block'; animateEl(auditSection); }
+      }
+    });
+  });
+}
 
 // Toast notification helper
 window.showToast = function(message) {

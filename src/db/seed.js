@@ -198,8 +198,30 @@ export function seedData(db) {
       INSERT INTO mentor_assignment (team_id, faculty_id, assigned_by, match_score, status)
       VALUES (?, ?, ?, ?, ?)
     `);
+    // Team 1 (CareSync AI) assigned to Dr. Arun Sharma (Reference Image Match!)
+    insertAssign.run(1, 1, 1, 86.70, 'ACTIVE');
     // Team 4 (ByteBuilders) assigned to Dr. Karthik Iyer
     insertAssign.run(4, 4, 1, 91.00, 'ACTIVE');
+
+    // 10. Mentorship Requests (Student Guidance Tickets)
+    const insertReq = db.prepare(`
+      INSERT INTO mentorship_request (team_id, faculty_id, milestone_title, description, status, mentor_notes)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
+    insertReq.run(
+      1, 1,
+      'Vision Transformer Preprocessing & Attention Maps',
+      'Need guidance on multi-slice DICOM windowing and attention rollout visualization for the radiology UI.',
+      'PENDING',
+      null
+    );
+    insertReq.run(
+      4, 4,
+      'PostgreSQL Connection Pool & JWT Architecture',
+      'Feedback on microservice authentication tokens and database pooling under hackathon evaluation load.',
+      'COMPLETED',
+      'Recommended pool max limit 25 and added composite index on user_credentials. Approved architecture.'
+    );
 
     db.exec(`COMMIT;`);
     console.log('✅ MentorMatchr database initialized and seeded successfully.');

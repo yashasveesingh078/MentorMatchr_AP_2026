@@ -138,7 +138,19 @@ export function initSchema(db) {
         ON mentor_assignment (team_id)
         WHERE status = 'ACTIVE';
 
-    -- 5. SUPPORTING INDEXES
+    -- 5. MENTORSHIP REVIEW & GUIDANCE REQUESTS (Student <-> Faculty Interaction)
+    CREATE TABLE IF NOT EXISTS mentorship_request (
+        request_id    INTEGER PRIMARY KEY AUTOINCREMENT,
+        team_id       INTEGER NOT NULL REFERENCES team (team_id) ON DELETE CASCADE,
+        faculty_id    INTEGER NOT NULL REFERENCES faculty (faculty_id) ON DELETE CASCADE,
+        milestone_title TEXT NOT NULL,
+        description   TEXT NOT NULL,
+        status        TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'COMPLETED')),
+        mentor_notes  TEXT,
+        created_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    -- 6. SUPPORTING INDEXES
     CREATE INDEX IF NOT EXISTS idx_faculty_department ON faculty (department_id);
     CREATE INDEX IF NOT EXISTS idx_faculty_expertise_exp ON faculty_expertise (expertise_id);
     CREATE INDEX IF NOT EXISTS idx_faculty_domain_domain ON faculty_domain (domain_id);
