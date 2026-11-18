@@ -519,13 +519,13 @@ BCNF ✓
 | 3 | keyword | Master list of technical keywords (e.g. Python, React), shared by faculty and problem statements |
 | 4 | expertise_area | Master list of named areas of expertise (e.g. Computer Vision) |
 | 5 | faculty | Faculty members: identity, contact, designation, department, mentoring capacity and availability |
-| 6 | faculty_expertise | Faculty ↔ expertise area link, with years of experience in that area |
-| 7 | faculty_domain | Faculty ↔ domain link, marking at most one primary domain |
-| 8 | faculty_keyword | Faculty ↔ keyword link |
+| 6 | faculty_expertise | Faculty ↔️ expertise area link, with years of experience in that area |
+| 7 | faculty_domain | Faculty ↔️ domain link, marking at most one primary domain |
+| 8 | faculty_keyword | Faculty ↔️ keyword link |
 | 9 | hackathon | Hackathon events (name, edition year, dates, venue) |
 | 10 | coordinator | Hackathon coordinators who manage the platform and make assignments |
 | 11 | problem_statement | Problem statements of a hackathon, each with one domain and a difficulty |
-| 12 | problem_keyword | Problem statement ↔ keyword link |
+| 12 | problem_keyword | Problem statement ↔️ keyword link |
 | 13 | team | Teams registered for a hackathon |
 | 14 | team_problem_selection | The problem statement a team has selected (at most one per team) |
 | 15 | mentor_assignment | Faculty mentors assigned to teams, with the assigning coordinator, match score and status history |
